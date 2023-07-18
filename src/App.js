@@ -10,19 +10,18 @@ export default () => {
 
   useEffect(() => {
     const loadAll = async () => {
-      // Pegando a lista TOTAL
       let list = await Tmdb.getHomeList();
       setMovieList(list);
-
-      // Pegando a lista dos destaques
-      let originals = list.filter(i => i.slug === 'originals');
-      let randomChosen = Math.floor(Math.random() * (originals[0].items.results.length - 1));
-
-      let chosen = originals[0].items.results[randomChosen];
-      let chosenInfo = await Tmdb.getMovieInfo(chosen.id, 'tv');
-      
-      console.log(chosenInfo);
-     
+    
+      let originals = list.find(i => i.slug === 'originals'); // Usar find em vez de filter
+      if (originals && originals.items && originals.items.results.length > 0) {
+        let randomChosen = Math.floor(Math.random() * originals.items.results.length);
+        let chosen = originals.items.results[randomChosen];
+        let chosenInfo = await Tmdb.getMovieInfo(chosen.id, 'tv');
+        setFeaturedData(chosenInfo);
+      }
+   
+    
     };
 
     loadAll();
